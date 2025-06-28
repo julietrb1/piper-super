@@ -1,4 +1,4 @@
-import { useWeightPresets } from "@/hooks/use-weight-presets";
+import { useWeightPresets, weightPresetDB, WeightPreset } from "@/hooks/use-weight-presets";
 import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
 import { Input } from "@/components/ui/input";
 import { useState } from "react";
@@ -44,13 +44,13 @@ export function PassengerPresetSelector({ weight, onPresetSelected }: Props) {
         (wp) => wp.weight === Number(newValue)
       );
       if (matchedWeightPreset != null)
-        client.models.WeightPreset.delete(matchedWeightPreset);
+        weightPresetDB.delete(matchedWeightPreset);
       setAltMode(null);
     } else if (isAdd && !newAdd && !newDelete) {
       const formValues = getFormValues();
       // TODO: Figure out why valid isn't working correctly.
       if (isFormValid && formValues.presetName && formValues.weight)
-        client.models.WeightPreset.create(formValues);
+        weightPresetDB.create(formValues);
       resetForm();
       setAltMode(null);
     } else if (!Number.isNaN(newValue)) {
