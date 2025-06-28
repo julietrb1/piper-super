@@ -85,6 +85,7 @@ export function PassengerPresetSelector({ weight, onPresetSelected }: Props) {
         value={weightForToggle}
         onValueChange={handleValueChange}
         className="justify-start"
+        size="lg"
       >
         {weightPresets.map((wp) => (
           <ToggleGroupItem
