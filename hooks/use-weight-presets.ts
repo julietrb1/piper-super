@@ -129,5 +129,5 @@ export function useWeightPresets() {
     };
   }, []);
 
-  return { weightPresets, isLoading, error, isSubscribed };
+  return { weightPresets, isLoading, error, isSubscribed, refreshPresets: loadPresets };
 }

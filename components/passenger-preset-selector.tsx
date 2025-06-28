@@ -16,7 +16,7 @@ interface WeightPresetForm {
 }
 
 export function PassengerPresetSelector({ weight, onPresetSelected }: Props) {
-  const { weightPresets, isLoading: weightPresetsLoading } = useWeightPresets();
+  const { weightPresets, isLoading: weightPresetsLoading, refreshPresets } = useWeightPresets();
   const [altMode, setAltMode] = useState<null | "add" | "delete">(null);
   const weightForToggle = altMode != null ? altMode : weight.toString();
   const isAdd = altMode === "add";
@@ -43,14 +43,20 @@ export function PassengerPresetSelector({ weight, onPresetSelected }: Props) {
       const matchedWeightPreset = weightPresets.find(
         (wp) => wp.weight === Number(newValue)
       );
-      if (matchedWeightPreset != null)
-        weightPresetDB.delete(matchedWeightPreset);
+      if (matchedWeightPreset != null) {
+        weightPresetDB.delete(matchedWeightPreset)
+          .then(() => refreshPresets())
+          .catch(err => console.error("Error deleting preset:", err));
+      }
       setAltMode(null);
     } else if (isAdd && !newAdd && !newDelete) {
       const formValues = getFormValues();
       // TODO: Figure out why valid isn't working correctly.
-      if (isFormValid && formValues.presetName && formValues.weight)
-        weightPresetDB.create(formValues);
+      if (isFormValid && formValues.presetName && formValues.weight) {
+        weightPresetDB.create(formValues)
+          .then(() => refreshPresets())
+          .catch(err => console.error("Error creating preset:", err));
+      }
       resetForm();
       setAltMode(null);
     } else if (!Number.isNaN(newValue)) {
