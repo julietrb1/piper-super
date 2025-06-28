@@ -8,22 +8,10 @@ import { ClimbPerformance } from "@/lib/performance-models";
 import { Slider } from "@/components/ui/slider";
 
 const formSchema = z.object({
-  fromAltHundreds: z.coerce
-    .number()
-    .gte(0)
-    .lte(120),
-  toAltHundreds: z.coerce
-    .number()
-    .gte(0)
-    .lte(120),
-  fromIsaTempDeviation: z.coerce
-    .number()
-    .gte(-15)
-    .lte(30),
-  toIsaTempDeviation: z.coerce
-    .number()
-    .gte(-15)
-    .lte(30),
+  fromAltHundreds: z.coerce.number().gte(0).lte(120),
+  toAltHundreds: z.coerce.number().gte(0).lte(120),
+  fromIsaTempDeviation: z.coerce.number().gte(-15).lte(30),
+  toIsaTempDeviation: z.coerce.number().gte(-15).lte(30),
 });
 
 export function ClimbCalc() {
@@ -51,22 +39,22 @@ export function ClimbCalc() {
   let fromClimb: ClimbPerformance | null, toClimb: ClimbPerformance | null;
   try {
     fromClimb = calculateClimb(fromIsaTempDeviation, fromAltHundreds);
-  } catch (e) {
+  } catch {
     fromClimb = null;
   }
   try {
     toClimb = calculateClimb(toIsaTempDeviation, toAltHundreds);
-  } catch (e) {
+  } catch {
     toClimb = null;
   }
   const minutes = (toClimb?.minutes ?? 0) - (fromClimb?.minutes ?? 0);
   const fuelGal = (toClimb?.fuelGal ?? 0) - (fromClimb?.fuelGal ?? 0);
   const fuelL = Math.round(fuelGal * 3.8 * 10) / 10;
   const fromTempC = Math.round(
-    15 + fromIsaTempDeviation - (2 * fromAltHundreds) / 10
+    15 + fromIsaTempDeviation - (2 * fromAltHundreds) / 10,
   );
   const toTempC = Math.round(
-    15 + toIsaTempDeviation - (2 * toAltHundreds) / 10
+    15 + toIsaTempDeviation - (2 * toAltHundreds) / 10,
   );
 
   return (
@@ -89,7 +77,7 @@ export function ClimbCalc() {
         />
         <Slider
           value={[fromAltHundreds]}
-          onValueChange={x => setValue("fromAltHundreds", x[0])}
+          onValueChange={(x) => setValue("fromAltHundreds", x[0])}
           min={0}
           max={65}
           step={5}
@@ -114,7 +102,7 @@ export function ClimbCalc() {
         />
         <Slider
           value={[toAltHundreds]}
-          onValueChange={x => setValue("toAltHundreds", x[0])}
+          onValueChange={(x) => setValue("toAltHundreds", x[0])}
           min={10}
           max={75}
           step={5}
@@ -139,7 +127,7 @@ export function ClimbCalc() {
         />{" "}
         <Slider
           value={[fromIsaTempDeviation]}
-          onValueChange={x => setValue("fromIsaTempDeviation", x[0])}
+          onValueChange={(x) => setValue("fromIsaTempDeviation", x[0])}
           min={-5}
           max={20}
           step={1}
@@ -164,7 +152,7 @@ export function ClimbCalc() {
         />
         <Slider
           value={[toIsaTempDeviation]}
-          onValueChange={x => setValue("toIsaTempDeviation", x[0])}
+          onValueChange={(x) => setValue("toIsaTempDeviation", x[0])}
           min={-5}
           max={20}
           step={1}

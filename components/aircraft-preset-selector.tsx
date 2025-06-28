@@ -68,14 +68,14 @@ export function AircraftPresetSelector({
   const matchedWeight = useMemo(
     () =>
       basicWeights.find((w) => w.weightLbs === weightLbs && w.armIn === armIn),
-    [weightLbs, armIn]
+    [weightLbs, armIn],
   );
   const handleValueChange = useCallback(
     (callsign: string) => {
       const newPreset = basicWeights.find((bw) => bw.aircraft === callsign);
       if (newPreset) onPresetSelected(newPreset);
     },
-    [basicWeights]
+    [onPresetSelected],
   );
 
   return (

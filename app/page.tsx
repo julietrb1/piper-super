@@ -6,13 +6,18 @@ import {ClimbCalc} from "@/components/climb-calc";
 import {CruiseCalc} from "@/components/cruise-calc";
 import {PerformanceTable} from "@/components/performance-table";
 
+import { ThemeToggle } from "@/components/theme-toggle";
+
 export default function Home() {
   return (
     <div className="container mx-auto">
       <div className="flex flex-col space-y-6 max-w-[800px]">
-        <div>
-          <h1 className="text-3xl font-bold">Performance</h1>
-          <p className="text-sm text-secondary-foreground">Warrior III</p>
+        <div className="flex justify-between items-center">
+          <div>
+            <h1 className="text-3xl font-bold">Performance</h1>
+            <p className="text-sm text-secondary-foreground">Warrior III</p>
+          </div>
+          <ThemeToggle />
         </div>
         <Tabs defaultValue="climb">
           <TabsList className="grid w-full grid-cols-3">
