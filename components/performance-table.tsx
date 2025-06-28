@@ -4,7 +4,7 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-  TableCell
+  TableCell,
 } from "@/components/ui/table";
 import { useState } from "react";
 import { BasicWeight } from "@/lib/basic-weight";
@@ -15,6 +15,7 @@ import { useForm } from "react-hook-form";
 import { SpeedTable } from "./speed-table";
 import { cn, lbsToKg, roundOneDec } from "@/lib/utils";
 import { MinFuelTable } from "./min-fuel-table";
+import { WeightPreset } from "@/hooks/use-weight-presets";
 
 const frontPassA = 80.5;
 const rearPassA = 118.1;
@@ -46,13 +47,13 @@ export function WeightRow({
   m,
   wKg,
   muted,
-  primary
+  primary,
 }: WeightRowProps) {
   return (
     <TableRow
       className={cn({
         "text-muted-foreground": muted,
-        "bg-primary-foreground font-bold": primary
+        "bg-primary-foreground font-bold": primary,
       })}
     >
       <TableCell className="text-left">{label}</TableCell>
@@ -65,12 +66,11 @@ export function WeightRow({
 }
 
 export function PerformanceTable() {
-  const { register: registerPerformance, watch: watchPerformance } = useForm<
-    PerformanceForm
-  >({
-    defaultValues: { fuelL: 181, burnL: 0 },
-    mode: "onChange"
-  });
+  const { register: registerPerformance, watch: watchPerformance } =
+    useForm<PerformanceForm>({
+      defaultValues: { fuelL: 181, burnL: 0 },
+      mode: "onChange",
+    });
 
   const [basicEmptyW, setBasicEmptyWeight] = useState(0);
   const [basicEmptyA, setBasicEmptyArm] = useState(0);
@@ -79,13 +79,13 @@ export function PerformanceTable() {
   const [frontPassW, setFrontPassW] = useState(0);
   const frontPassM = Math.ceil(frontPassW * frontPassA);
 
-  const [rearPassW, setRearPassW] = useState(20);
+  const [rearPassW, setRearPassW] = useState(0);
   const rearPassM = Math.ceil(rearPassW * rearPassA);
 
   const fuelW = Math.round(watchPerformance("fuelL") * 1.58);
   const fuelM = Math.ceil(fuelW * fuelA);
 
-  const [baggageW, setBaggageW] = useState(25);
+  const [baggageW, setBaggageW] = useState(0);
   const baggageM = Math.ceil(baggageW * baggageA);
 
   const rampW = basicEmptyW + frontPassW + rearPassW + fuelW + baggageW;
@@ -113,6 +113,16 @@ export function PerformanceTable() {
     setBasicEmptyArm(basicWeight.armIn);
   };
 
+  const handlePassengerPresetSelected = (preset: WeightPreset) => {
+    setFrontPassW(Number(preset.weight));
+    if (preset.rearPassW !== undefined) {
+      setRearPassW(Number(preset.rearPassW));
+    }
+    if (preset.baggageW !== undefined) {
+      setBaggageW(Number(preset.baggageW));
+    }
+  };
+
   return (
     <div className="flex flex-col">
       <AircraftPresetSelector
@@ -122,7 +132,7 @@ export function PerformanceTable() {
       />
       <PassengerPresetSelector
         weight={frontPassW}
-        onPresetSelected={setFrontPassW}
+        onPresetSelected={handlePassengerPresetSelected}
       />
       <div className="flex flex-row space-x-2 items-center">
         <Input

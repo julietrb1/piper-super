@@ -4,10 +4,12 @@ export interface WeightPreset {
   id?: number;
   presetName: string;
   weight: number;
+  rearPassW?: number;
+  baggageW?: number;
 }
 
 const DB_NAME = 'weight-presets-db';
-const DB_VERSION = 1;
+const DB_VERSION = 2;
 const STORE_NAME = 'weight-presets';
 
 const initDB = (): Promise<IDBDatabase> => {

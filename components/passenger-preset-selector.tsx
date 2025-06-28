@@ -1,4 +1,8 @@
-import { useWeightPresets, weightPresetDB, WeightPreset } from "@/hooks/use-weight-presets";
+import {
+  useWeightPresets,
+  weightPresetDB,
+  WeightPreset,
+} from "@/hooks/use-weight-presets";
 import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
 import { Input } from "@/components/ui/input";
 import { useState } from "react";
@@ -7,16 +11,22 @@ import { Plus, Trash } from "lucide-react";
 
 interface Props {
   weight: number;
-  onPresetSelected: (newWeight: number) => void;
+  onPresetSelected: (preset: WeightPreset) => void;
 }
 
 interface WeightPresetForm {
   presetName: string;
   weight: number;
+  rearPassW?: number;
+  baggageW?: number;
 }
 
 export function PassengerPresetSelector({ weight, onPresetSelected }: Props) {
-  const { weightPresets, isLoading: weightPresetsLoading, refreshPresets } = useWeightPresets();
+  const {
+    weightPresets,
+    isLoading: weightPresetsLoading,
+    refreshPresets,
+  } = useWeightPresets();
   const [altMode, setAltMode] = useState<null | "add" | "delete">(null);
   const weightForToggle = altMode != null ? altMode : weight.toString();
   const isAdd = altMode === "add";
@@ -27,7 +37,7 @@ export function PassengerPresetSelector({ weight, onPresetSelected }: Props) {
     reset: resetForm,
     register,
   } = useForm<WeightPresetForm>({
-    defaultValues: { presetName: "", weight: 0 },
+    defaultValues: { presetName: "", weight: 0, rearPassW: 0, baggageW: 0 },
     mode: "onChange",
   });
 
@@ -41,26 +51,37 @@ export function PassengerPresetSelector({ weight, onPresetSelected }: Props) {
       setAltMode(newValue as "add" | "delete");
     } else if (isDelete && !newAdd && !newDelete) {
       const matchedWeightPreset = weightPresets.find(
-        (wp) => wp.weight === Number(newValue)
+        (wp) => wp.weight === Number(newValue),
       );
       if (matchedWeightPreset != null) {
-        weightPresetDB.delete(matchedWeightPreset)
+        weightPresetDB
+          .delete(matchedWeightPreset)
           .then(() => refreshPresets())
-          .catch(err => console.error("Error deleting preset:", err));
+          .catch((err) => console.error("Error deleting preset:", err));
       }
       setAltMode(null);
     } else if (isAdd && !newAdd && !newDelete) {
       const formValues = getFormValues();
       // TODO: Figure out why valid isn't working correctly.
       if (isFormValid && formValues.presetName && formValues.weight) {
-        weightPresetDB.create(formValues)
+        weightPresetDB
+          .create(formValues)
           .then(() => refreshPresets())
-          .catch(err => console.error("Error creating preset:", err));
+          .catch((err) => console.error("Error creating preset:", err));
       }
       resetForm();
       setAltMode(null);
     } else if (!Number.isNaN(newValue)) {
-      onPresetSelected(Number(newValue));
+      const matchedWeightPreset = weightPresets.find(
+        (wp) => wp.presetName === newValue,
+      );
+
+      if (matchedWeightPreset) {
+        // Pass the entire preset object to the callback
+        onPresetSelected(matchedWeightPreset);
+      } else {
+        console.error("No preset found for name:", newValue);
+      }
     }
   };
 
@@ -75,8 +96,18 @@ export function PassengerPresetSelector({ weight, onPresetSelected }: Props) {
           />
           <Input
             className="max-w-40"
-            placeholder="Weight"
+            placeholder="Front Weight"
             {...register("weight")}
+          />
+          <Input
+            className="max-w-40"
+            placeholder="Rear Weight"
+            {...register("rearPassW")}
+          />
+          <Input
+            className="max-w-40"
+            placeholder="Baggage Weight"
+            {...register("baggageW")}
           />
         </>
       )}
@@ -90,7 +121,7 @@ export function PassengerPresetSelector({ weight, onPresetSelected }: Props) {
         {weightPresets.map((wp) => (
           <ToggleGroupItem
             key={wp.presetName}
-            value={wp.weight.toString()}
+            value={wp.presetName}
             aria-label={`Set ${wp.presetName}`}
           >
             {wp.presetName}
