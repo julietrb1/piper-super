@@ -8,9 +8,9 @@ export interface WeightPreset {
   baggageW?: number;
 }
 
-const DB_NAME = 'weight-presets-db';
-const DB_VERSION = 2;
-const STORE_NAME = 'weight-presets';
+const DB_NAME = "piper-super";
+const DB_VERSION = 1;
+const STORE_NAME = "weight-presets";
 
 const initDB = (): Promise<IDBDatabase> => {
   return new Promise((resolve, reject) => {
@@ -27,8 +27,11 @@ const initDB = (): Promise<IDBDatabase> => {
     request.onupgradeneeded = (event) => {
       const db = (event.target as IDBOpenDBRequest).result;
       if (!db.objectStoreNames.contains(STORE_NAME)) {
-        const store = db.createObjectStore(STORE_NAME, { keyPath: 'id', autoIncrement: true });
-        store.createIndex('presetName', 'presetName', { unique: true });
+        const store = db.createObjectStore(STORE_NAME, {
+          keyPath: "id",
+          autoIncrement: true,
+        });
+        store.createIndex("presetName", "presetName", { unique: true });
       }
     };
   });
@@ -38,7 +41,7 @@ export const weightPresetDB = {
   async getAll(): Promise<WeightPreset[]> {
     const db = await initDB();
     return new Promise((resolve, reject) => {
-      const transaction = db.transaction(STORE_NAME, 'readonly');
+      const transaction = db.transaction(STORE_NAME, "readonly");
       const store = transaction.objectStore(STORE_NAME);
       const request = store.getAll();
 
@@ -52,10 +55,10 @@ export const weightPresetDB = {
     });
   },
 
-  async create(preset: Omit<WeightPreset, 'id'>): Promise<WeightPreset> {
+  async create(preset: Omit<WeightPreset, "id">): Promise<WeightPreset> {
     const db = await initDB();
     return new Promise((resolve, reject) => {
-      const transaction = db.transaction(STORE_NAME, 'readwrite');
+      const transaction = db.transaction(STORE_NAME, "readwrite");
       const store = transaction.objectStore(STORE_NAME);
       const request = store.add(preset);
 
@@ -72,12 +75,12 @@ export const weightPresetDB = {
 
   async delete(preset: WeightPreset): Promise<void> {
     if (preset.id == null) {
-      throw new Error('Cannot delete preset without an ID');
+      throw new Error("Cannot delete preset without an ID");
     }
 
     const db = await initDB();
     return new Promise((resolve, reject) => {
-      const transaction = db.transaction(STORE_NAME, 'readwrite');
+      const transaction = db.transaction(STORE_NAME, "readwrite");
       const store = transaction.objectStore(STORE_NAME);
       const request = store.delete(preset.id!);
 
@@ -89,7 +92,7 @@ export const weightPresetDB = {
         reject(`Error deleting weight preset: ${request.error}`);
       };
     });
-  }
+  },
 };
 
 export function useWeightPresets() {
@@ -103,7 +106,7 @@ export function useWeightPresets() {
     try {
       const presets = await weightPresetDB.getAll();
       setWeightPresets(
-        [...presets].sort((a, b) => a.presetName.localeCompare(b.presetName))
+        [...presets].sort((a, b) => a.presetName.localeCompare(b.presetName)),
       );
       setIsSubscribed(true);
       setIsLoading(false);
@@ -123,13 +126,19 @@ export function useWeightPresets() {
       }
     };
 
-    window.addEventListener('storage', handleStorageChange);
+    window.addEventListener("storage", handleStorageChange);
 
     return () => {
       setIsSubscribed(false);
-      window.removeEventListener('storage', handleStorageChange);
+      window.removeEventListener("storage", handleStorageChange);
     };
   }, []);
 
-  return { weightPresets, isLoading, error, isSubscribed, refreshPresets: loadPresets };
+  return {
+    weightPresets,
+    isLoading,
+    error,
+    isSubscribed,
+    refreshPresets: loadPresets,
+  };
 }
