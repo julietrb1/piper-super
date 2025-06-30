@@ -1,21 +1,21 @@
 import {
   Table,
   TableBody,
+  TableCell,
   TableHead,
   TableHeader,
   TableRow,
-  TableCell,
 } from "@/components/ui/table";
 import { useState } from "react";
-import { BasicWeight } from "@/lib/basic-weight";
 import { AircraftPresetSelector } from "./aircraft-preset-selector";
 import { PassengerPresetSelector } from "./passenger-preset-selector";
-import { Input } from "./ui/input";
 import { useForm } from "react-hook-form";
 import { SpeedTable } from "./speed-table";
 import { cn, lbsToKg, roundOneDec } from "@/lib/utils";
 import { MinFuelTable } from "./min-fuel-table";
 import { WeightPreset } from "@/hooks/use-weight-presets";
+import { InputWithLabel } from "@/components/input-with-label";
+import { BasicWeight } from "@/lib/basic-weight";
 
 const frontPassA = 80.5;
 const rearPassA = 118.1;
@@ -135,19 +135,20 @@ export function PerformanceTable() {
         onPresetSelected={handlePassengerPresetSelected}
       />
       <div className="flex flex-row space-x-2 items-center">
-        <Input
+        <InputWithLabel
+          id="fob"
+          labelText="Fuel (L)"
           type="number"
           className="max-w-20"
           {...registerPerformance("fuelL")}
         />
-        <span>L</span>
-        <span className="ps-8">Burn</span>
-        <Input
+        <InputWithLabel
+          id="burn"
+          labelText="Burn (L)"
           type="number"
           className="max-w-20"
           {...registerPerformance("burnL")}
         />
-        <span>L</span>
       </div>
       <Table className="my-8 max-w-[560px] font-mono">
         <TableHeader>

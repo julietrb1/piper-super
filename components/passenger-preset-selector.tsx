@@ -1,13 +1,14 @@
 import {
   useWeightPresets,
-  weightPresetDB,
   WeightPreset,
+  weightPresetDB,
 } from "@/hooks/use-weight-presets";
 import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
-import { Input } from "@/components/ui/input";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { Plus, Trash } from "lucide-react";
+import { InputWithLabel } from "@/components/input-with-label";
+import { cn } from "@/lib/utils";
 
 interface Props {
   weight: number;
@@ -37,7 +38,7 @@ export function PassengerPresetSelector({ weight, onPresetSelected }: Props) {
     reset: resetForm,
     register,
   } = useForm<WeightPresetForm>({
-    defaultValues: { presetName: "", weight: 0, rearPassW: 0, baggageW: 0 },
+    defaultValues: { presetName: "", weight: 0, rearPassW: 20, baggageW: 20 },
     mode: "onChange",
   });
 
@@ -86,27 +87,31 @@ export function PassengerPresetSelector({ weight, onPresetSelected }: Props) {
   };
 
   return (
-    <div className="flex space-x-3">
+    <div className={cn("flex space-x-3", { "my-4": isAdd })}>
       {isAdd && (
         <>
-          <Input
+          <InputWithLabel
+            id="presetName"
             className="max-w-40"
-            placeholder="Name"
+            labelText="Name"
             {...register("presetName")}
           />
-          <Input
+          <InputWithLabel
+            id="frontWeight"
             className="max-w-40"
-            placeholder="Front Weight"
+            labelText="Front"
             {...register("weight")}
           />
-          <Input
+          <InputWithLabel
+            id="rearWeight"
             className="max-w-40"
-            placeholder="Rear Weight"
+            labelText="Rear"
             {...register("rearPassW")}
           />
-          <Input
+          <InputWithLabel
+            id="baggageWeight"
             className="max-w-40"
-            placeholder="Baggage Weight"
+            labelText="Baggage"
             {...register("baggageW")}
           />
         </>
