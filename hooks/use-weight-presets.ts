@@ -4,8 +4,8 @@ export interface WeightPreset {
   id?: number;
   presetName: string;
   weight: number;
-  rearPassW?: number;
-  baggageW?: number;
+  rearPassW: number;
+  baggageW: number;
 }
 
 const DB_NAME = "piper-super";

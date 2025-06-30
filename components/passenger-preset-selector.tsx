@@ -4,32 +4,38 @@ import {
   weightPresetDB,
 } from "@/hooks/use-weight-presets";
 import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { useForm } from "react-hook-form";
 import { Plus, Trash } from "lucide-react";
 import { InputWithLabel } from "@/components/input-with-label";
 import { cn } from "@/lib/utils";
 
 interface Props {
-  weight: number;
+  frontPassW: number;
+  rearPassW: number;
+  baggageW: number;
   onPresetSelected: (preset: WeightPreset) => void;
 }
 
 interface WeightPresetForm {
   presetName: string;
-  weight: number;
-  rearPassW?: number;
-  baggageW?: number;
+  frontPassW: number;
+  rearPassW: number;
+  baggageW: number;
 }
 
-export function PassengerPresetSelector({ weight, onPresetSelected }: Props) {
+export function PassengerPresetSelector({
+  frontPassW,
+  rearPassW,
+  baggageW,
+  onPresetSelected,
+}: Props) {
   const {
     weightPresets,
     isLoading: weightPresetsLoading,
     refreshPresets,
   } = useWeightPresets();
   const [altMode, setAltMode] = useState<null | "add" | "delete">(null);
-  const weightForToggle = altMode != null ? altMode : weight.toString();
   const isAdd = altMode === "add";
   const isDelete = altMode === "delete";
   const {
@@ -38,22 +44,39 @@ export function PassengerPresetSelector({ weight, onPresetSelected }: Props) {
     reset: resetForm,
     register,
   } = useForm<WeightPresetForm>({
-    defaultValues: { presetName: "", weight: 0, rearPassW: 20, baggageW: 20 },
+    defaultValues: {
+      presetName: "",
+      frontPassW: 0,
+      rearPassW: 20,
+      baggageW: 20,
+    },
     mode: "onChange",
   });
+
+  const matchedWeightPreset = useMemo(() => {
+    return weightPresets.find(
+      (wp) =>
+        wp.weight === frontPassW &&
+        wp.rearPassW === rearPassW &&
+        baggageW === wp.baggageW,
+    );
+  }, [baggageW, frontPassW, rearPassW, weightPresets]);
 
   if (weightPresetsLoading) return "(weight presets loading...)";
 
   const handleValueChange = (newValue: string): void => {
+    if (newValue === "") {
+      if (matchedWeightPreset) {
+        onPresetSelected(matchedWeightPreset);
+      }
+      return;
+    }
     const newAdd = newValue === "add";
     const newDelete = newValue === "delete";
 
     if (newAdd || newDelete) {
       setAltMode(newValue as "add" | "delete");
     } else if (isDelete && !newAdd && !newDelete) {
-      const matchedWeightPreset = weightPresets.find(
-        (wp) => wp.weight === Number(newValue),
-      );
       if (matchedWeightPreset != null) {
         weightPresetDB
           .delete(matchedWeightPreset)
@@ -64,9 +87,14 @@ export function PassengerPresetSelector({ weight, onPresetSelected }: Props) {
     } else if (isAdd && !newAdd && !newDelete) {
       const formValues = getFormValues();
       // TODO: Figure out why valid isn't working correctly.
-      if (isFormValid && formValues.presetName && formValues.weight) {
+      if (isFormValid && formValues.presetName && formValues.frontPassW) {
         weightPresetDB
-          .create(formValues)
+          .create({
+            presetName: formValues.presetName,
+            weight: formValues.frontPassW,
+            rearPassW: formValues.rearPassW,
+            baggageW: formValues.baggageW,
+          })
           .then(() => refreshPresets())
           .catch((err) => console.error("Error creating preset:", err));
       }
@@ -78,7 +106,6 @@ export function PassengerPresetSelector({ weight, onPresetSelected }: Props) {
       );
 
       if (matchedWeightPreset) {
-        // Pass the entire preset object to the callback
         onPresetSelected(matchedWeightPreset);
       } else {
         console.error("No preset found for name:", newValue);
@@ -100,25 +127,25 @@ export function PassengerPresetSelector({ weight, onPresetSelected }: Props) {
             id="frontWeight"
             className="max-w-40"
             labelText="Front"
-            {...register("weight")}
+            {...register("frontPassW", { valueAsNumber: true })}
           />
           <InputWithLabel
             id="rearWeight"
             className="max-w-40"
             labelText="Rear"
-            {...register("rearPassW")}
+            {...register("rearPassW", { valueAsNumber: true })}
           />
           <InputWithLabel
             id="baggageWeight"
             className="max-w-40"
             labelText="Baggage"
-            {...register("baggageW")}
+            {...register("baggageW", { valueAsNumber: true })}
           />
         </>
       )}
       <ToggleGroup
         type="single"
-        value={weightForToggle}
+        value={matchedWeightPreset?.presetName}
         onValueChange={handleValueChange}
         className="justify-start"
         size="lg"

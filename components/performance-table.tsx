@@ -127,7 +127,9 @@ export function PerformanceTable() {
         onPresetSelected={handleAircraftPresetSelected}
       />
       <PassengerPresetSelector
-        weight={frontPassW}
+        frontPassW={frontPassW}
+        rearPassW={rearPassW}
+        baggageW={baggageW}
         onPresetSelected={handlePassengerPresetSelected}
       />
       <div className="flex flex-row space-x-2 items-center">
