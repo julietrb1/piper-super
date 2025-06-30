@@ -57,10 +57,10 @@ export function WeightRow({
       })}
     >
       <TableCell className="text-left">{label}</TableCell>
-      <TableCell>{w.toLocaleString()}</TableCell>
-      <TableCell>{a?.toFixed(1)}</TableCell>
-      <TableCell>{m?.toLocaleString()}</TableCell>
-      <TableCell>{wKg?.toLocaleString()}</TableCell>
+      <TableCell>{(w || "--").toLocaleString()}</TableCell>
+      <TableCell>{a && !isNaN(a) ? a.toFixed(1) : "--"}</TableCell>
+      <TableCell>{(m || "--")?.toLocaleString()}</TableCell>
+      <TableCell>{(wKg || "--")?.toLocaleString()}</TableCell>
     </TableRow>
   );
 }
@@ -115,12 +115,8 @@ export function PerformanceTable() {
 
   const handlePassengerPresetSelected = (preset: WeightPreset) => {
     setFrontPassW(Number(preset.weight));
-    if (preset.rearPassW !== undefined) {
-      setRearPassW(Number(preset.rearPassW));
-    }
-    if (preset.baggageW !== undefined) {
-      setBaggageW(Number(preset.baggageW));
-    }
+    setRearPassW(Number(preset.rearPassW));
+    setBaggageW(Number(preset.baggageW));
   };
 
   return (
@@ -152,12 +148,12 @@ export function PerformanceTable() {
       </div>
       <Table className="my-8 max-w-[560px] font-mono">
         <TableHeader>
-          <TableRow>
-            <TableHead className="py-2">Item</TableHead>
-            <TableHead className="py-2 text-right">W (lbs)</TableHead>
-            <TableHead className="py-2 text-right">A (in)</TableHead>
-            <TableHead className="py-2 text-right">M</TableHead>
-            <TableHead className="py-2 text-right">W (kg)</TableHead>
+          <TableRow className="bg-accent">
+            <TableHead className="py-2 font-bold">Item</TableHead>
+            <TableHead className="py-2 font-bold text-right">W (lbs)</TableHead>
+            <TableHead className="py-2 font-bold text-right">A (in)</TableHead>
+            <TableHead className="py-2 font-bold text-right">M</TableHead>
+            <TableHead className="py-2 font-bold text-right">W (kg)</TableHead>
           </TableRow>
         </TableHeader>
         <TableBody className="text-right">

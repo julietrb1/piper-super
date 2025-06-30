@@ -34,14 +34,21 @@ export function SpeedTable({ toW, lW }: Props) {
     <div>
       <Table className="max-w-72 font-mono">
         <TableHeader>
-          <TableRow>
-            <TableHead>Speed</TableHead>
-            <TableHead>Take-off</TableHead>
-            <TableHead>Landing</TableHead>
+          <TableRow className="bg-accent">
+            <TableHead className="font-bold">Speed</TableHead>
+            <TableHead className="font-bold">Take-off</TableHead>
+            <TableHead className="font-bold">Landing</TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>
-          <TableRow>
+          <TableRow className="bg-primary-foreground">
+            <TableCell>
+              V<sub>REF</sub>
+            </TableCell>
+            <TableCell>{vRefTow}</TableCell>
+            <TableCell>{vRefLw}</TableCell>
+          </TableRow>
+          <TableRow className="bg-primary-foreground">
             <TableCell>
               V<sub>A</sub>
             </TableCell>
@@ -54,13 +61,6 @@ export function SpeedTable({ toW, lW }: Props) {
             </TableCell>
             <TableCell>{vrTow}</TableCell>
             <TableCell>{vrLw}</TableCell>
-          </TableRow>
-          <TableRow>
-            <TableCell>
-              V<sub>REF</sub>
-            </TableCell>
-            <TableCell>{vRefTow}</TableCell>
-            <TableCell>{vRefLw}</TableCell>
           </TableRow>
           <TableRow>
             <TableCell>

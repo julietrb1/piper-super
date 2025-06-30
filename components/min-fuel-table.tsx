@@ -27,15 +27,17 @@ export function MinFuelTable({ fuelBurnL }: Props) {
   const tenPctL = Math.ceil(legalMinL / 10);
   const vdo15m = isSolo ? addPerHourBurnL / 4 : 0;
   const companyMinL = Math.ceil(
-    legalMinL + legalMinL / 10 + vdo15m + unusableL
+    legalMinL + legalMinL / 10 + vdo15m + unusableL,
   );
 
   return (
     <div className="flex flex-col space-y-4">
       <Table className="max-w-52 font-mono">
         <TableHeader>
-          <TableRow>
-            <TableHead colSpan={2}>Minimum fuel</TableHead>
+          <TableRow className="bg-accent">
+            <TableHead colSpan={2} className="font-bold">
+              Minimum fuel (L)
+            </TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>
