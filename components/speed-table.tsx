@@ -18,11 +18,11 @@ interface Props {
 }
 
 const va = 111;
-const mtow = 2440;
+const mtoW = 2440;
 
 export function SpeedTable({ toW, lW }: Props) {
-  const tova = Math.ceil(Math.sqrt(toW / mtow) * va);
-  const lva = Math.ceil(Math.sqrt(lW / mtow) * va);
+  const tova = Math.ceil(Math.sqrt(toW / mtoW) * va);
+  const lva = Math.ceil(Math.sqrt(lW / mtoW) * va);
   const vrTow = calcWarrior3VR(toW);
   const vrLw = calcWarrior3VR(lW);
   const vRefTow = calcWarrior3VRef(toW);
