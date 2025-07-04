@@ -65,7 +65,7 @@ export function PassengerPresetSelector({
   if (weightPresetsLoading) return "(weight presets loading...)";
 
   const handleValueChange = (newValue: string): void => {
-    if (newValue === "") {
+    if (newValue === "" && !isAdd && !isDelete) {
       if (matchedWeightPreset) {
         onPresetSelected(matchedWeightPreset);
       }
