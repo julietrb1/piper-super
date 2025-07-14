@@ -21,7 +21,7 @@ export default function Home() {
           </div>
           <ThemeToggle />
         </div>
-        <Tabs defaultValue="climb">
+        <Tabs defaultValue="climb-cruise">
           <TabsList className="grid w-full grid-cols-3">
             <TabsTrigger value="climb-cruise">Climb/Cruise</TabsTrigger>
             <TabsTrigger value="general">General</TabsTrigger>
