@@ -41,26 +41,26 @@ export function SpeedTable({ toW, lW }: Props) {
           </TableRow>
         </TableHeader>
         <TableBody>
-          <TableRow className="bg-primary-foreground">
-            <TableCell>
-              V<sub>REF</sub>
-            </TableCell>
-            <TableCell>{vRefTow}</TableCell>
-            <TableCell>{vRefLw}</TableCell>
-          </TableRow>
-          <TableRow className="bg-primary-foreground">
-            <TableCell>
-              V<sub>A</sub>
-            </TableCell>
-            <TableCell>{tova}</TableCell>
-            <TableCell>{lva}</TableCell>
-          </TableRow>
           <TableRow>
             <TableCell>
               V<sub>R</sub>
             </TableCell>
             <TableCell>{vrTow}</TableCell>
             <TableCell>{vrLw}</TableCell>
+          </TableRow>
+          <TableRow>
+            <TableCell>
+              V<sub>REF</sub>
+            </TableCell>
+            <TableCell>{vRefTow}</TableCell>
+            <TableCell>{vRefLw}</TableCell>
+          </TableRow>
+          <TableRow>
+            <TableCell>
+              V<sub>A</sub>
+            </TableCell>
+            <TableCell>{tova}</TableCell>
+            <TableCell>{lva}</TableCell>
           </TableRow>
           <TableRow>
             <TableCell>
