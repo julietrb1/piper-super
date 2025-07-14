@@ -61,7 +61,7 @@ function cubicWeights(t: number): [number, number, number, number] {
 function interpolate1D(p: (number | undefined)[], weights: number[]): number {
   return p.reduce(
     (sum, value, index) => sum! + (value ?? 0) * weights[index],
-    0
+    0,
   )!;
 }
 
@@ -73,7 +73,7 @@ function interpolate1D(p: (number | undefined)[], weights: number[]): number {
  */
 function locate(
   value: number,
-  points: number[]
+  points: number[],
 ): { index: number; factor: number } {
   const n = points.length;
   for (let i = 0; i < n - 1; i++) {
@@ -95,10 +95,10 @@ function locate(
 function bicubicInterpolate(
   grid: BicubicGrid,
   x: number,
-  y: number
+  y: number,
 ): { z1: number; z2: number } {
-  const xPoints = grid.map(row => row[0].x);
-  const yPoints = grid[0].map(point => point.y);
+  const xPoints = grid.map((row) => row[0].x);
+  const yPoints = grid[0].map((point) => point.y);
 
   const { index: xIndex, factor: tx } = locate(x, xPoints);
   const { index: yIndex, factor: ty } = locate(y, yPoints);
@@ -121,7 +121,7 @@ function bicubicInterpolate(
         row[Math.min(yIndex + 1, row.length - 1)]?.z1,
         row[Math.min(yIndex + 2, row.length - 1)]?.z1,
       ],
-      wy
+      wy,
     );
     z1Rows.push(z1Row);
 
@@ -132,7 +132,7 @@ function bicubicInterpolate(
         row[Math.min(yIndex + 1, row.length - 1)]?.z2,
         row[Math.min(yIndex + 2, row.length - 1)]?.z2,
       ],
-      wy
+      wy,
     );
     z2Rows.push(z2Row);
   }
@@ -146,15 +146,22 @@ function bicubicInterpolate(
 
 export function calculateClimb(
   isaTempDeviation: number,
-  altHundreds: number
+  altHundreds: number,
 ): ClimbPerformance {
+  if (altHundreds === 0) {
+    return {
+      minutes: 0,
+      fuelGal: 1.0,
+    };
+  }
+
   const bicubicResult = bicubicInterpolate(
     climbGrid,
     isaTempDeviation,
-    altHundreds
+    altHundreds,
   );
   return {
-    minutes: Math.round(bicubicResult.z1),
+    minutes: bicubicResult.z1,
     fuelGal: bicubicResult.z2,
   };
 }

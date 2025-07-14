@@ -47,7 +47,9 @@ export function ClimbCalc() {
   } catch {
     toClimb = null;
   }
-  const minutes = (toClimb?.minutes ?? 0) - (fromClimb?.minutes ?? 0);
+  const minutes = Math.ceil(
+    (toClimb?.minutes ?? 0) - (fromClimb?.minutes ?? 0),
+  );
   const fuelGal = (toClimb?.fuelGal ?? 0) - (fromClimb?.fuelGal ?? 0);
   const fuelL = Math.round(fuelGal * 3.8 * 10) / 10;
   const fromTempC = Math.round(
