@@ -6,7 +6,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { useState } from "react";
+import { useCallback, useState } from "react";
 import { AircraftPresetSelector } from "./aircraft-preset-selector";
 import { PassengerPresetSelector } from "./passenger-preset-selector";
 import { useForm } from "react-hook-form";
@@ -16,6 +16,7 @@ import { MinFuelTable } from "./min-fuel-table";
 import { WeightPreset } from "@/hooks/use-weight-presets";
 import { InputWithLabel } from "@/components/input-with-label";
 import { BasicWeight } from "@/lib/basic-weight";
+import { Button } from "@/components/ui/button";
 
 const frontPassA = 80.5;
 const rearPassA = 118.1;
@@ -24,6 +25,7 @@ const baggageA = 142.8;
 const fuelAllowW = -7;
 const fuelAllowA = 95;
 const fuelAllowM = -665;
+const taxiL = 5;
 
 interface PerformanceForm {
   fuelL: number;
@@ -66,11 +68,15 @@ export function WeightRow({
 }
 
 export function PerformanceTable() {
-  const { register: registerPerformance, watch: watchPerformance } =
-    useForm<PerformanceForm>({
-      defaultValues: { fuelL: 181, burnL: 0 },
-      mode: "onChange",
-    });
+  const {
+    register: registerPerformance,
+    watch: watchPerformance,
+    setValue,
+    resetField,
+  } = useForm<PerformanceForm>({
+    defaultValues: { fuelL: 181, burnL: 0 },
+    mode: "onChange",
+  });
 
   const [basicEmptyW, setBasicEmptyWeight] = useState(0);
   const [basicEmptyA, setBasicEmptyArm] = useState(0);
@@ -82,7 +88,8 @@ export function PerformanceTable() {
   const [rearPassW, setRearPassW] = useState(0);
   const rearPassM = Math.ceil(rearPassW * rearPassA);
 
-  const fuelW = Math.round(watchPerformance("fuelL") * 1.58);
+  const fuelL = watchPerformance("fuelL");
+  const fuelW = Math.round(fuelL * 1.58);
   const fuelM = Math.ceil(fuelW * fuelA);
 
   const [baggageW, setBaggageW] = useState(0);
@@ -119,6 +126,11 @@ export function PerformanceTable() {
     setBaggageW(Number(preset.baggageW));
   };
 
+  const deductFbo = useCallback(() => {
+    debugger;
+    setValue("fuelL", Math.max(0, fuelL - taxiL - fuelBurnL));
+  }, [fuelBurnL, fuelL, setValue]);
+
   return (
     <div className="flex flex-col">
       <AircraftPresetSelector
@@ -142,11 +154,27 @@ export function PerformanceTable() {
         />
         <InputWithLabel
           id="burn"
-          labelText="Burn (L)"
+          labelText="FBO (L)"
           type="number"
           className="max-w-20"
           {...registerPerformance("burnL")}
         />
+        <Button
+          variant="secondary"
+          className="mt-5"
+          size="sm"
+          onClick={deductFbo}
+        >
+          Deduct all burn
+        </Button>
+        <Button
+          variant="secondary"
+          className="mt-5"
+          size="sm"
+          onClick={() => resetField("fuelL")}
+        >
+          Reset fuel
+        </Button>
       </div>
       <Table className="my-8 max-w-[560px] font-mono">
         <TableHeader>
@@ -192,7 +220,7 @@ export function PerformanceTable() {
             wKg={rampWKg}
           />
           <WeightRow
-            label="Fuel Allowance"
+            label={`Fuel allowance (${taxiL} L)`}
             w={fuelAllowW}
             a={fuelAllowA}
             m={fuelAllowM}
@@ -202,7 +230,7 @@ export function PerformanceTable() {
           <WeightRow label="ZFW" w={zfW} a={zfA} m={zfM} wKg={zfWKg} primary />
 
           <TableRow>
-            <TableCell className="text-left">Trip Burn</TableCell>
+            <TableCell className="text-left">Trip burn</TableCell>
             <TableCell colSpan={2}>
               ({fuelBurnW.toLocaleString()} lbs)
             </TableCell>
