@@ -19,7 +19,7 @@ export function ClimbCalc() {
     resolver: zodResolver(formSchema),
     defaultValues: {
       fromAltHundreds: 0,
-      toAltHundreds: 10,
+      toAltHundreds: 25,
       fromIsaTempDeviation: 0,
       toIsaTempDeviation: 0,
     },
