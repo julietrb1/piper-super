@@ -58,7 +58,7 @@ export function MinFuelTable({ fuelBurnL }: Props) {
             <TableCell className="text-right">{finResL}</TableCell>
           </TableRow>
           <TableRow className="font-bold bg-primary-foreground">
-            <TableCell>Legal min.</TableCell>
+            <TableCell>Required</TableCell>
             <TableCell className="text-right">{legalMinL}</TableCell>
           </TableRow>
           <TableRow>
