@@ -5,7 +5,7 @@ import { useForm } from "react-hook-form";
 import { FormField } from "@/components/ui/form";
 import { calculateClimb } from "@/lib/performance-bicubic";
 import { ClimbPerformance } from "@/lib/performance-models";
-import { Slider } from "@/components/ui/slider";
+import { Button } from "@/components/ui/button";
 
 const formSchema = z.object({
   fromAltHundreds: z.coerce.number().gte(0).lte(120),
@@ -59,105 +59,137 @@ export function ClimbCalc() {
 
   return (
     <div className="flex flex-col gap-4">
-      <div className="flex flex-row gap-8">
+      <div className="flex flex-row gap-1">
         <FormField
           control={control}
           name="fromAltHundreds"
           render={({ field }) => (
             <InputWithLabel
-              className="max-w-24"
+              className="max-w-16"
               id="fromaltitude"
               type="number"
-              labelText="From alt (x100)"
+              labelText="From alt"
               min={0}
               max={120}
               {...field}
             />
           )}
         />
-        <Slider
-          value={[fromAltHundreds]}
-          onValueChange={(x) => setValue("fromAltHundreds", x[0])}
-          min={0}
-          max={65}
-          step={5}
-          className="max-w-48 mt-4"
-        />
-      </div>
-      <div className="flex flex-row gap-8">
+        <Button
+          className="mt-6"
+          size="sm"
+          variant="secondary"
+          onClick={() => setValue("fromAltHundreds", fromAltHundreds - 10)}
+        >
+          -
+        </Button>
+        <Button
+          className="mt-6 mr-3"
+          size="sm"
+          variant="secondary"
+          onClick={() => setValue("fromAltHundreds", fromAltHundreds + 10)}
+        >
+          +
+        </Button>
         <FormField
           control={control}
           name="toAltHundreds"
           render={({ field }) => (
             <InputWithLabel
-              className="max-w-24"
+              className="max-w-16"
               id="toaltitude"
               type="number"
-              labelText="To alt (x100)"
+              labelText="To alt"
               min={0}
               max={120}
               {...field}
             />
           )}
         />
-        <Slider
-          value={[toAltHundreds]}
-          onValueChange={(x) => setValue("toAltHundreds", x[0])}
-          min={10}
-          max={75}
-          step={5}
-          className="max-w-48 mt-4"
-        />
+        <Button
+          className="mt-6"
+          size="sm"
+          variant="secondary"
+          onClick={() => setValue("toAltHundreds", toAltHundreds - 10)}
+        >
+          -
+        </Button>
+        <Button
+          className="mt-6"
+          size="sm"
+          variant="secondary"
+          onClick={() => setValue("toAltHundreds", toAltHundreds + 10)}
+        >
+          +
+        </Button>
       </div>
-      <div className="flex flex-row gap-8">
+      <div className="flex flex-row gap-1">
         <FormField
           control={control}
           name="fromIsaTempDeviation"
           render={({ field }) => (
             <InputWithLabel
-              className="max-w-24"
+              className="max-w-16"
               id="fromIsaTempDeviation"
               type="number"
-              labelText="From temp ISA"
+              labelText="From ISA"
               min={-15}
               max={30}
               {...field}
             />
           )}
         />{" "}
-        <Slider
-          value={[fromIsaTempDeviation]}
-          onValueChange={(x) => setValue("fromIsaTempDeviation", x[0])}
-          min={-5}
-          max={20}
-          step={1}
-          className="max-w-48 mt-4"
-        />
-      </div>
-      <div className="flex flex-row gap-8">
+        <Button
+          className="mt-6"
+          size="sm"
+          variant="secondary"
+          onClick={() =>
+            setValue("fromIsaTempDeviation", fromIsaTempDeviation - 1)
+          }
+        >
+          -
+        </Button>
+        <Button
+          className="mt-6 mr-3"
+          size="sm"
+          variant="secondary"
+          onClick={() =>
+            setValue("fromIsaTempDeviation", fromIsaTempDeviation + 1)
+          }
+        >
+          +
+        </Button>
         <FormField
           control={control}
           name="toIsaTempDeviation"
           render={({ field }) => (
             <InputWithLabel
-              className="max-w-24"
+              className="max-w-16"
               id="toIsaTempDeviation"
               type="number"
-              labelText="To temp ISA"
+              labelText="To ISA"
               min={-15}
               max={30}
               {...field}
             />
           )}
         />
-        <Slider
-          value={[toIsaTempDeviation]}
-          onValueChange={(x) => setValue("toIsaTempDeviation", x[0])}
-          min={-5}
-          max={20}
-          step={1}
-          className="max-w-48 mt-4"
-        />
+        <Button
+          className="mt-6"
+          size="sm"
+          variant="secondary"
+          onClick={() => setValue("toIsaTempDeviation", toIsaTempDeviation - 1)}
+        >
+          -
+        </Button>
+        <Button
+          className="mt-6"
+          size="sm"
+          variant="secondary"
+          onClick={() => setValue("toIsaTempDeviation", toIsaTempDeviation + 1)}
+        >
+          +
+        </Button>
       </div>
       <div className="grid grid-cols-2 max-w-64">
         <div className="text-muted-foreground">Minutes</div>

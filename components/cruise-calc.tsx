@@ -4,33 +4,25 @@ import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { FormField } from "@/components/ui/form";
-import { Slider } from "@/components/ui/slider";
+import { Button } from "@/components/ui/button";
 
 const formSchema = z.object({
-  altHundreds: z.coerce
-    .number()
-    .gte(0)
-    .lte(120),
-  isaTempDeviation: z.coerce
-    .number()
-    .gte(-15)
-    .lte(30),
+  altHundreds: z.coerce.number().gte(0).lte(120),
+  isaTempDeviation: z.coerce.number().gte(-15).lte(30),
 });
 
 export function CruiseCalc() {
   const { control, watch, setValue } = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      altHundreds: 10,
+      altHundreds: 25,
       isaTempDeviation: 0,
     },
     mode: "onChange",
   });
 
-  const {
-    isaTempDeviation: isaTempDeviationStr,
-    altHundreds: altHundredsStr,
-  } = watch();
+  const { isaTempDeviation: isaTempDeviationStr, altHundreds: altHundredsStr } =
+    watch();
   const isaTempDeviation = Number(isaTempDeviationStr);
   const altHundreds = Number(altHundredsStr);
   const cruise = calcWarrior3Cruise(altHundreds, isaTempDeviation);
@@ -38,14 +30,14 @@ export function CruiseCalc() {
 
   return (
     <div className="flex flex-col gap-y-6">
-      <div className="flex flex-row gap-8">
+      <div className="flex flex-row gap-1">
         <FormField
           control={control}
           name="altHundreds"
           render={({ field }) => (
             <InputWithLabel
               id="altHundreds"
-              labelText="Alt (x100)"
+              labelText="Alt"
               type="number"
               min={0}
               max={120}
@@ -53,23 +45,29 @@ export function CruiseCalc() {
             />
           )}
         />
-        <Slider
-          value={[altHundreds]}
-          onValueChange={x => setValue("altHundreds", x[0])}
-          min={0}
-          max={115}
-          step={5}
-          className="max-w-48 mt-4"
-        />
-      </div>
-      <div className="flex flex-row gap-8">
+        <Button
+          className="mt-6"
+          size="sm"
+          variant="secondary"
+          onClick={() => setValue("altHundreds", altHundreds - 10)}
+        >
+          -
+        </Button>
+        <Button
+          className="mt-6 mr-3"
+          size="sm"
+          variant="secondary"
+          onClick={() => setValue("altHundreds", altHundreds + 10)}
+        >
+          +
+        </Button>
         <FormField
           control={control}
           name="isaTempDeviation"
           render={({ field }) => (
             <InputWithLabel
               id="isaTempDeviation"
-              labelText="Temp ISA"
+              labelText="ISA"
               type="number"
               min={-15}
               max={30}
@@ -77,14 +75,22 @@ export function CruiseCalc() {
             />
           )}
         />
-        <Slider
-          value={[isaTempDeviation]}
-          onValueChange={x => setValue("isaTempDeviation", x[0])}
-          min={-5}
-          max={20}
-          step={1}
-          className="max-w-48 mt-4"
-        />
+        <Button
+          className="mt-6"
+          size="sm"
+          variant="secondary"
+          onClick={() => setValue("isaTempDeviation", isaTempDeviation - 1)}
+        >
+          -
+        </Button>
+        <Button
+          className="mt-6 mr-3"
+          size="sm"
+          variant="secondary"
+          onClick={() => setValue("isaTempDeviation", isaTempDeviation + 1)}
+        >
+          +
+        </Button>
       </div>
       <div className="grid grid-cols-2 max-w-64">
         <div className="text-muted-foreground">RPM</div>

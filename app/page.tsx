@@ -1,7 +1,7 @@
 "use client";
 
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Card, CardContent } from "@/components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { ClimbCalc } from "@/components/climb-calc";
 import { CruiseCalc } from "@/components/cruise-calc";
 import { PerformanceTable } from "@/components/performance-table";
@@ -23,23 +23,28 @@ export default function Home() {
         </div>
         <Tabs defaultValue="climb">
           <TabsList className="grid w-full grid-cols-3">
-            <TabsTrigger value="climb">Climb</TabsTrigger>
-            <TabsTrigger value="cruise">Cruise</TabsTrigger>
+            <TabsTrigger value="climb-cruise">Climb/Cruise</TabsTrigger>
             <TabsTrigger value="general">General</TabsTrigger>
           </TabsList>
-          <TabsContent value="climb">
-            <Card>
-              <CardContent className="pt-4">
-                <ClimbCalc />
-              </CardContent>
-            </Card>
-          </TabsContent>
-          <TabsContent value="cruise">
-            <Card>
-              <CardContent className="pt-4">
-                <CruiseCalc />
-              </CardContent>
-            </Card>
+          <TabsContent value="climb-cruise">
+            <div className="grid grid-cols-2 gap-4">
+              <Card>
+                <CardHeader>
+                  <CardTitle>Climb (x100 ft)</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <ClimbCalc />
+                </CardContent>
+              </Card>
+              <Card>
+                <CardHeader>
+                  <CardTitle>Cruise (x100 ft)</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <CruiseCalc />
+                </CardContent>
+              </Card>
+            </div>
           </TabsContent>
           <TabsContent value="general">
             <PerformanceTable />
