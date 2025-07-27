@@ -96,24 +96,24 @@ const cruises: CruiseForAltitude[] = [
   },
 ];
 
-const speedsDomain = [1600, 1800, 2000, 2200, 2440];
+const warrior3SpeedsDomain = [1600, 1800, 2000, 2200, 2440];
 
 const vRRange = [40, 43, 46, 48, 52];
-const calculateVRFromWeight = scaleLinear(speedsDomain, vRRange);
+const calculateVRFromWeight = scaleLinear(warrior3SpeedsDomain, vRRange);
 
 export function calcWarrior3VR(w: number) {
   return Math.round(calculateVRFromWeight(w));
 }
 
 const vRefRange = [49, 55, 60, 63, 65];
-const calculateVRefFromWeight = scaleLinear(speedsDomain, vRefRange);
+const calculateVRefFromWeight = scaleLinear(warrior3SpeedsDomain, vRefRange);
 
 export function calcWarrior3VRef(w: number) {
   return Math.round(calculateVRefFromWeight(w));
 }
 
 const vTossRange = [44, 47, 50, 53, 57];
-const calculateVTossFromWeight = scaleLinear(speedsDomain, vTossRange);
+const calculateVTossFromWeight = scaleLinear(warrior3SpeedsDomain, vTossRange);
 
 export function calcWarrior3VToss(w: number) {
   return Math.round(calculateVTossFromWeight(w));
@@ -121,17 +121,17 @@ export function calcWarrior3VToss(w: number) {
 
 export function calcWarrior3Cruise(
   altitudeHundreds: number,
-  providedIsa: number
+  providedIsa: number,
 ): CruisePerformance {
-  const closestCruise = cruises.reduce(function(prev, curr) {
+  const closestCruise = cruises.reduce(function (prev, curr) {
     return Math.abs(curr.altHundreds - altitudeHundreds) <=
       Math.abs(prev.altHundreds - altitudeHundreds)
       ? curr
       : prev;
   });
 
-  const rpmDomain = closestCruise.isaRows.map(x => x.isaDeviation);
-  const rpmRange = closestCruise.isaRows.map(x => x.rpm);
+  const rpmDomain = closestCruise.isaRows.map((x) => x.isaDeviation);
+  const rpmRange = closestCruise.isaRows.map((x) => x.rpm);
   const calculateRpmFromIsaDeviation = scaleLinear(rpmDomain, rpmRange);
 
   const tasDomain = [

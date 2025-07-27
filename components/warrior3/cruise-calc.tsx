@@ -1,4 +1,4 @@
-import { calcWarrior3Cruise } from "@/lib/performance-calc";
+import { calcWarrior3Cruise } from "@/lib/warrior3/performance-calc";
 import { InputWithLabel } from "@/components/input-with-label";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -11,7 +11,7 @@ const formSchema = z.object({
   isaTempDeviation: z.coerce.number().gte(-15).lte(30),
 });
 
-export function CruiseCalc() {
+export function Warrior3CruiseCalc() {
   const { control, watch, setValue } = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {

@@ -6,7 +6,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { useCallback, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { AircraftPresetSelector } from "./aircraft-preset-selector";
 import { PassengerPresetSelector } from "./passenger-preset-selector";
 import { useForm } from "react-hook-form";
@@ -17,15 +17,13 @@ import { WeightPreset } from "@/hooks/use-weight-presets";
 import { InputWithLabel } from "@/components/input-with-label";
 import { BasicWeight } from "@/lib/basic-weight";
 import { Button } from "@/components/ui/button";
+import { useAircraftModel } from "@/hooks/use-aircraft-model";
 
 const frontPassA = 80.5;
 const rearPassA = 118.1;
 const fuelA = 95.0;
 const baggageA = 142.8;
-const fuelAllowW = -7;
 const fuelAllowA = 95;
-const fuelAllowM = -665;
-const taxiL = 5;
 
 interface PerformanceForm {
   fuelL: number;
@@ -67,20 +65,37 @@ export function WeightRow({
   );
 }
 
+const usableFuel = {
+  warrior3: 181,
+  arrow3: 272,
+};
+
 export function PerformanceTable() {
+  const { model } = useAircraftModel();
+  const fuelAllowW = model === "warrior3" ? -7 : -10;
+  const fuelAllowM = model === "warrior3" ? -665 : -950;
+  const taxiL = model === "warrior3" ? 5 : 6;
   const {
     register: registerPerformance,
     watch: watchPerformance,
     setValue,
     resetField,
+    reset,
   } = useForm<PerformanceForm>({
-    defaultValues: { fuelL: 181, burnL: 0 },
+    defaultValues: { fuelL: usableFuel[model], burnL: 0 },
     mode: "onChange",
   });
+  useEffect(() => {
+    reset({ fuelL: usableFuel[model], burnL: 0 }, { keepValues: false });
+    setBasicEmptyWeight(0);
+    setBasicEmptyArm(0);
+  }, [model, reset]);
 
   const [basicEmptyW, setBasicEmptyWeight] = useState(0);
   const [basicEmptyA, setBasicEmptyArm] = useState(0);
   const basicEmptyM = Math.ceil(basicEmptyW * basicEmptyA);
+
+  const retractMoment = model === "arrow3" ? 819 : 0;
 
   const [frontPassW, setFrontPassW] = useState(0);
   const frontPassM = Math.ceil(frontPassW * frontPassA);
@@ -96,7 +111,8 @@ export function PerformanceTable() {
   const baggageM = Math.ceil(baggageW * baggageA);
 
   const rampW = basicEmptyW + frontPassW + rearPassW + fuelW + baggageW;
-  const rampM = basicEmptyM + frontPassM + rearPassM + fuelM + baggageM;
+  const rampM =
+    basicEmptyM + frontPassM + rearPassM + fuelM + baggageM + retractMoment;
   const rampA = roundOneDec(rampM / rampW);
   const rampWKg = lbsToKg(rampW);
 
@@ -134,7 +150,7 @@ export function PerformanceTable() {
   const deductFbo = useCallback(() => {
     debugger;
     setValue("fuelL", Math.max(0, fuelL - taxiL - fuelBurnL));
-  }, [fuelBurnL, fuelL, setValue]);
+  }, [fuelBurnL, fuelL, setValue, taxiL]);
 
   return (
     <div className="flex flex-col">
@@ -222,6 +238,9 @@ export function PerformanceTable() {
             a={baggageA}
             m={baggageM}
           />
+          {model === "arrow3" && (
+            <WeightRow label="Retract" w={0} a="--" m={retractMoment} />
+          )}
           <WeightRow
             label="Ramp (RW)"
             w={rampW}
@@ -241,7 +260,7 @@ export function PerformanceTable() {
           <WeightRow
             label="FBO"
             w={-fuelBurnW}
-            a={fuelA}
+            a={fuelA.toFixed(1)}
             m={-fuelBurnM}
             wKg={-fuelBurnKg}
           />

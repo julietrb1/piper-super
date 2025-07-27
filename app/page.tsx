@@ -2,9 +2,10 @@
 
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { ClimbCalc } from "@/components/climb-calc";
-import { CruiseCalc } from "@/components/cruise-calc";
-import { Arrow3CruiseCalc } from "@/components/arrow3-cruise-calc";
+import { Warrior3ClimbCalc } from "@/components/warrior3/climb-calc";
+import { Warrior3CruiseCalc } from "@/components/warrior3/cruise-calc";
+import { Arrow3CruiseCalc } from "@/components/arrow3/cruise-calc";
+import { Arrow3ClimbCalc } from "@/components/arrow3/climb-calc";
 import { PerformanceTable } from "@/components/performance-table";
 
 import { ThemeToggle } from "@/components/theme-toggle";
@@ -52,7 +53,11 @@ function HomeContent() {
                   <CardTitle>Climb (x100 ft)</CardTitle>
                 </CardHeader>
                 <CardContent>
-                  <ClimbCalc />
+                  {model === "warrior3" ? (
+                    <Warrior3ClimbCalc />
+                  ) : (
+                    <Arrow3ClimbCalc />
+                  )}
                 </CardContent>
               </Card>
               <Card>
@@ -60,7 +65,11 @@ function HomeContent() {
                   <CardTitle>Cruise (x100 ft)</CardTitle>
                 </CardHeader>
                 <CardContent>
-                  {model === "warrior3" ? <CruiseCalc /> : <Arrow3CruiseCalc />}
+                  {model === "warrior3" ? (
+                    <Warrior3CruiseCalc />
+                  ) : (
+                    <Arrow3CruiseCalc />
+                  )}
                 </CardContent>
               </Card>
             </div>

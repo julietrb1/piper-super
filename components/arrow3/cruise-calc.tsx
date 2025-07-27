@@ -16,11 +16,7 @@ import {
   calculateTas65,
   calculateTas75,
 } from "@/lib/arrow3/cruise";
-import {
-  calcDensityAltitude,
-  calculateTempFromIsa,
-  roundOneDec,
-} from "@/lib/utils";
+import { calcDensityAltitude, calculateTempFromIsa } from "@/lib/utils";
 
 const formSchema = z.object({
   altHundreds: z.coerce.number().gte(0).lte(120),
@@ -121,23 +117,35 @@ export function Arrow3CruiseCalc() {
         </Button>
       </div>
       <div className="grid grid-cols-2 max-w-64">
-        <div className="col-span-2 mb-2">( 2200 / 2500 RPM )</div>
+        <div className="col-span-2 mb-2">
+          ( 2200<span className="text-muted-foreground">/2500</span> RPM )
+        </div>
         <div className="text-muted-foreground">55% TAS</div>
         <div>
-          {tas55.toLocaleString()} ({mp55Power2200 || "--"}/
-          {mp55Power2500 || "--"})
+          {tas55.toLocaleString()} ({mp55Power2200 || "--"}
+          <span className="text-muted-foreground">
+            /{mp55Power2500 || "--"}
+          </span>
+          )
         </div>
         <div className="text-muted-foreground">65% TAS</div>
         <div>
-          {tas65.toLocaleString()} ({mp65Power2200 || "--"}/
-          {mp65Power2500 || "--"})
+          {tas65.toLocaleString()} ({mp65Power2200 || "--"}
+          <span className="text-muted-foreground">
+            /{mp65Power2500 || "--"}
+          </span>
+          )
         </div>
         <div className="text-muted-foreground">75% TAS</div>
         <div>
-          {tas75.toLocaleString()} (--/{mp75Power2500 || "--"})
+          {tas75.toLocaleString()} (--
+          <span className="text-muted-foreground">
+            /{mp75Power2500 || "--"}
+          </span>
+          )
         </div>
         <div className="text-muted-foreground">Temp</div>
-        <div>{roundOneDec(tempC)}˚C</div>
+        <div>{tempC}˚C</div>
         <div className="text-muted-foreground">Density alt</div>
         <div>{densityAlt.toLocaleString()}</div>
       </div>
