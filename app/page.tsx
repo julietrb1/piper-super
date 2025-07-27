@@ -4,11 +4,27 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { ClimbCalc } from "@/components/climb-calc";
 import { CruiseCalc } from "@/components/cruise-calc";
+import { Arrow3CruiseCalc } from "@/components/arrow3-cruise-calc";
 import { PerformanceTable } from "@/components/performance-table";
 
 import { ThemeToggle } from "@/components/theme-toggle";
+import {
+  AircraftModelProvider,
+  useAircraftModel,
+} from "@/hooks/use-aircraft-model";
+import { AircraftModelSelector } from "@/components/aircraft-model-selector";
 
 export default function Home() {
+  return (
+    <AircraftModelProvider>
+      <HomeContent />
+    </AircraftModelProvider>
+  );
+}
+
+function HomeContent() {
+  const { model } = useAircraftModel();
+
   return (
     <div className="container mx-auto pt-4">
       <div className="flex flex-col space-y-6 max-w-[800px]">
@@ -16,10 +32,13 @@ export default function Home() {
           <div>
             <h1 className="text-3xl font-bold">Piper Super</h1>
             <p className="text-sm text-secondary-foreground">
-              Warrior III performance calculator
+              Performance/W&B calculator
             </p>
           </div>
-          <ThemeToggle />
+          <div className="flex items-center gap-2">
+            <AircraftModelSelector />
+            <ThemeToggle />
+          </div>
         </div>
         <Tabs defaultValue="climb-cruise">
           <TabsList className="grid w-full grid-cols-3">
@@ -41,7 +60,7 @@ export default function Home() {
                   <CardTitle>Cruise (x100 ft)</CardTitle>
                 </CardHeader>
                 <CardContent>
-                  <CruiseCalc />
+                  {model === "warrior3" ? <CruiseCalc /> : <Arrow3CruiseCalc />}
                 </CardContent>
               </Card>
             </div>

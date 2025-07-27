@@ -35,7 +35,7 @@ interface PerformanceForm {
 interface WeightRowProps {
   label: string;
   w: number;
-  a?: number;
+  a?: number | string;
   m?: number;
   wKg?: number;
   muted?: boolean;
@@ -60,7 +60,7 @@ export function WeightRow({
     >
       <TableCell className="text-left">{label}</TableCell>
       <TableCell>{(w || "--").toLocaleString()}</TableCell>
-      <TableCell>{a && !isNaN(a) ? a.toFixed(1) : "--"}</TableCell>
+      <TableCell>{a && !isNaN(Number(a)) ? a : "--"}</TableCell>
       <TableCell>{(m || "--")?.toLocaleString()}</TableCell>
       <TableCell>{(wKg || "--")?.toLocaleString()}</TableCell>
     </TableRow>
@@ -112,8 +112,13 @@ export function PerformanceTable() {
 
   const fuelBurnL = Number(watchPerformance("burnL"));
   const fuelBurnW = Math.ceil(fuelBurnL * 1.58);
+  const fuelBurnM = Math.ceil(fuelBurnW * fuelA);
+  const fuelBurnKg = lbsToKg(fuelBurnW);
+
   const lW = toW - fuelBurnW;
-  const lWKg = lbsToKg(lW);
+  const lM = toM - fuelBurnM;
+  const lA = roundOneDec(lM / lW);
+  const lWKg = toWKg - fuelBurnKg;
 
   const handleAircraftPresetSelected = (basicWeight: BasicWeight) => {
     setBasicEmptyWeight(basicWeight.weightLbs);
@@ -205,7 +210,12 @@ export function PerformanceTable() {
             a={rearPassA}
             m={rearPassM}
           />
-          <WeightRow label="Fuel (48 gal max)" w={fuelW} a={fuelA} m={fuelM} />
+          <WeightRow
+            label="Fuel (48 gal max)"
+            w={fuelW}
+            a={fuelA.toFixed(1)}
+            m={fuelM}
+          />
           <WeightRow
             label="Baggage (200 lbs max)"
             w={baggageW}
@@ -218,26 +228,26 @@ export function PerformanceTable() {
             a={rampA}
             m={rampM}
             wKg={rampWKg}
+            primary
           />
           <WeightRow
-            label={`Fuel allowance (${taxiL} L)`}
+            label="Taxi"
             w={fuelAllowW}
-            a={fuelAllowA}
+            a={fuelAllowA.toFixed(1)}
             m={fuelAllowM}
             muted
           />
           <WeightRow label="TOW" w={toW} a={toA} m={toM} wKg={toWKg} primary />
-          <WeightRow label="ZFW" w={zfW} a={zfA} m={zfM} wKg={zfWKg} primary />
+          <WeightRow
+            label="FBO"
+            w={-fuelBurnW}
+            a={fuelA}
+            m={-fuelBurnM}
+            wKg={-fuelBurnKg}
+          />
 
-          <TableRow>
-            <TableCell className="text-left">Trip burn</TableCell>
-            <TableCell colSpan={2}>
-              ({fuelBurnW.toLocaleString()} lbs)
-            </TableCell>
-            <TableCell>({fuelBurnL} L)</TableCell>
-          </TableRow>
-
-          <WeightRow label="LW" w={lW} wKg={lWKg} primary />
+          <WeightRow label="LW" w={lW} wKg={lWKg} a={lA} m={lM} primary />
+          <WeightRow label="ZFW" w={zfW} a={zfA} m={zfM} wKg={zfWKg} />
         </TableBody>
       </Table>
       <div className="flex flex-row space-x-28">

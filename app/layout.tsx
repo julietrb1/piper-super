@@ -15,7 +15,7 @@ const geistMono = Geist_Mono({
 
 export const metadata: Metadata = {
   title: "Piper Super: Warrior performance",
-  description: "Warrior III performance calculator",
+  description: "Performance, weight, and balance calculator",
 };
 
 export default function RootLayout({
