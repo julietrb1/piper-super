@@ -42,7 +42,7 @@ const formSchema = z.object({
 
 export function FuelPlan() {
   const { model } = useAircraftModel();
-  const { theme } = useTheme();
+  const { resolvedTheme } = useTheme();
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -237,12 +237,12 @@ export function FuelPlan() {
               <TableCell className="text-right">{discretionaryL}</TableCell>
             </TableRow>
             <TableRow
-              className={cn(
-                { "bg-green-900": theme === "dark" && marginL >= 0 },
-                { "bg-red-900": theme === "dark" && marginL < 0 },
-                { "bg-green-100": theme === "light" && marginL >= 0 },
-                { "bg-red-100": theme === "light" && marginL < 0 },
-              )}
+              className={cn({
+                "bg-green-900": resolvedTheme === "dark" && marginL >= 0,
+                "bg-red-900": resolvedTheme === "dark" && marginL < 0,
+                "bg-green-100": resolvedTheme === "light" && marginL >= 0,
+                "bg-red-100": resolvedTheme === "light" && marginL < 0,
+              })}
             >
               <TableCell>Margin</TableCell>
               <TableCell className="text-right">{marginMin}</TableCell>
