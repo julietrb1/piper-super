@@ -16,5 +16,6 @@ const minsXs = [
 const minsYs = [0, 1, 2, 4, 5, 6, 8, 10, 12, 15, 18, 21, 24, 27.5, 32, 37, 45];
 const minsSpline = new CubicSpline(minsXs, minsYs);
 
-export const getClimbMin = (densityAltHundreds: number) =>
-  minsSpline.eval(densityAltHundreds);
+export const getClimbMin = (densityAltHundreds: number) => {
+  return minsSpline.eval(densityAltHundreds);
+};

@@ -1,10 +1,10 @@
-import { calcWarrior3Cruise } from "@/lib/warrior3/performance-calc";
 import { InputWithLabel } from "@/components/input-with-label";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { FormField } from "@/components/ui/form";
 import { Button } from "@/components/ui/button";
+import { getWarrior3Cruise } from "@/lib/warrior3/cruise";
 
 const formSchema = z.object({
   altHundreds: z.coerce.number().gte(0).lte(120),
@@ -25,7 +25,7 @@ export function Warrior3CruiseCalc() {
     watch();
   const isaTempDeviation = Number(isaTempDeviationStr);
   const altHundreds = Number(altHundredsStr);
-  const cruise = calcWarrior3Cruise(altHundreds, isaTempDeviation);
+  const cruise = getWarrior3Cruise(altHundreds * 100, isaTempDeviation);
   const tempC = Math.round(15 + isaTempDeviation - 2 * (altHundreds / 10));
 
   return (
@@ -99,8 +99,6 @@ export function Warrior3CruiseCalc() {
         <div>{cruise.tas.toLocaleString()}</div>
         <div className="text-muted-foreground">Temp</div>
         <div>{tempC}˚C</div>
-        <div className="text-muted-foreground">Press alt (x100)</div>
-        <div>{cruise.altHundreds.toLocaleString()}</div>
       </div>
     </div>
   );

@@ -148,7 +148,6 @@ export function PerformanceTable() {
   };
 
   const deductFbo = useCallback(() => {
-    debugger;
     setValue("fuelL", Math.max(0, fuelL - taxiL - fuelBurnL));
   }, [fuelBurnL, fuelL, setValue, taxiL]);
 

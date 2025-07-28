@@ -6,7 +6,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { FormField } from "@/components/ui/form";
 import { Button } from "@/components/ui/button";
-import { calcDensityAltitude, calculateTempFromIsa } from "@/lib/utils";
+import { calculateTempFromIsa, densityAltitudeISA } from "@/lib/utils";
 import { getClimbGal, getClimbL, getClimbMin } from "@/lib/arrow3/climb";
 
 const formSchema = z.object({
@@ -36,12 +36,17 @@ export function Arrow3ClimbCalc() {
   } = watch();
   const fromIsaDeviation = Number(fromIsaDeviationStr);
   const fromAltHundreds = Number(fromAltHundredsStr);
-  const fromDensityAlt = calcDensityAltitude(fromAltHundreds, fromIsaDeviation);
+  const fromDensityAlt = Math.max(
+    0,
+    densityAltitudeISA(Math.max(0, fromAltHundreds * 100), fromIsaDeviation),
+  );
   const toIsaDeviation = Number(toIsaDeviationStr);
   const toAltHundreds = Number(toAltHundredsStr);
-  const toDensityAlt = calcDensityAltitude(toAltHundreds, toIsaDeviation);
+  const toDensityAlt = Math.max(
+    0,
+    densityAltitudeISA(Math.max(0, toAltHundreds * 100), toIsaDeviation),
+  );
 
-  // Calculate climb performance using Arrow3-specific functions
   const fromMinutes = getClimbMin(fromDensityAlt / 100);
   const toMinutes = getClimbMin(toDensityAlt / 100);
   const minutes = Math.ceil(toMinutes - fromMinutes);

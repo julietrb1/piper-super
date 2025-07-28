@@ -16,7 +16,7 @@ import {
   calculateTas65,
   calculateTas75,
 } from "@/lib/arrow3/cruise";
-import { calcDensityAltitude, calculateTempFromIsa } from "@/lib/utils";
+import { calculateTempFromIsa, densityAltitudeISA } from "@/lib/utils";
 
 const formSchema = z.object({
   altHundreds: z.coerce.number().gte(0).lte(120),
@@ -37,7 +37,7 @@ export function Arrow3CruiseCalc() {
     watch();
   const isaDeviation = Number(isaTempDeviationStr);
   const pressAltHundreds = Number(altHundredsStr);
-  const densityAlt = calcDensityAltitude(pressAltHundreds, isaDeviation);
+  const densityAlt = densityAltitudeISA(pressAltHundreds * 100, isaDeviation);
 
   const tas55 = Math.round(calculateTas55(densityAlt));
   const mp55Power2200 = calcMP55Power2200(pressAltHundreds);
