@@ -8,10 +8,10 @@ import { densityAltitudeISA } from "@/lib/utils";
 import { getClimbMin, getClimbFuelGal } from "@/lib/warrior3/climb";
 
 const formSchema = z.object({
-  fromAltHundreds: z.coerce.number().gte(0).lte(120),
-  toAltHundreds: z.coerce.number().gte(0).lte(120),
-  fromIsaDeviation: z.coerce.number().gte(-15).lte(30),
-  toIsaDeviation: z.coerce.number().gte(-15).lte(30),
+  fromAltHundreds: z.coerce.number<number>().gte(0).lte(120),
+  toAltHundreds: z.coerce.number<number>().gte(0).lte(120),
+  fromIsaDeviation: z.coerce.number<number>().gte(-15).lte(30),
+  toIsaDeviation: z.coerce.number<number>().gte(-15).lte(30),
 });
 
 export function Warrior3ClimbCalc() {

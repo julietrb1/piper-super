@@ -7,8 +7,8 @@ import { Button } from "@/components/ui/button";
 import { getWarrior3Cruise } from "@/lib/warrior3/cruise";
 
 const formSchema = z.object({
-  altHundreds: z.coerce.number().gte(0).lte(120),
-  isaTempDeviation: z.coerce.number().gte(-15).lte(30),
+  altHundreds: z.coerce.number<number>().gte(0).lte(120),
+  isaTempDeviation: z.coerce.number<number>().gte(-15).lte(30),
 });
 
 export function Warrior3CruiseCalc() {
