@@ -27,7 +27,7 @@ function HomeContent() {
   const { model } = useAircraftModel();
 
   return (
-    <div className="container mx-auto pt-4">
+    <div className="container mx-auto pt-4 pb-6">
       <div className="flex flex-col space-y-6 max-w-[800px]">
         <div className="flex justify-between items-center">
           <div>

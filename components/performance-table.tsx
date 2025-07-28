@@ -12,7 +12,7 @@ import { PassengerPresetSelector } from "./passenger-preset-selector";
 import { useForm } from "react-hook-form";
 import { SpeedTable } from "./speed-table";
 import { cn, lbsToKg, roundOneDec } from "@/lib/utils";
-import { MinFuelTable } from "./min-fuel-table";
+import { FuelPlan } from "./fuel-plan";
 import { WeightPreset } from "@/hooks/use-weight-presets";
 import { InputWithLabel } from "@/components/input-with-label";
 import { BasicWeight } from "@/lib/basic-weight";
@@ -74,6 +74,7 @@ export function PerformanceTable() {
   const { model } = useAircraftModel();
   const fuelAllowW = model === "warrior3" ? -7 : -10;
   const fuelAllowM = model === "warrior3" ? -665 : -950;
+  const maxFuelGal = model === "warrior3" ? 48 : 72;
   const taxiL = model === "warrior3" ? 5 : 6;
   const {
     register: registerPerformance,
@@ -199,7 +200,7 @@ export function PerformanceTable() {
       <Table className="my-8 max-w-[560px] font-mono">
         <TableHeader>
           <TableRow className="bg-accent">
-            <TableHead className="py-2 font-bold">Item</TableHead>
+            <TableHead className="py-2 font-bold">Weight/balance</TableHead>
             <TableHead className="py-2 font-bold text-right">W (lbs)</TableHead>
             <TableHead className="py-2 font-bold text-right">A (in)</TableHead>
             <TableHead className="py-2 font-bold text-right">M</TableHead>
@@ -226,7 +227,7 @@ export function PerformanceTable() {
             m={rearPassM}
           />
           <WeightRow
-            label="Fuel (48 gal max)"
+            label={`Fuel (${maxFuelGal} gal max)`}
             w={fuelW}
             a={fuelA.toFixed(1)}
             m={fuelM}
@@ -270,7 +271,7 @@ export function PerformanceTable() {
       </Table>
       <div className="flex flex-row space-x-28">
         <SpeedTable toW={toW} lW={lW} />
-        <MinFuelTable fuelBurnL={fuelBurnL} />
+        <FuelPlan />
       </div>
     </div>
   );
