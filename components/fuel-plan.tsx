@@ -21,8 +21,7 @@ import {
   FormLabel,
 } from "@/components/ui/form";
 import { NumberInput } from "@/components/number-input";
-import { cn } from "@/lib/utils";
-import { useTheme } from "@/hooks/use-theme";
+import { Check, TriangleAlert } from "lucide-react";
 
 const cruiseRate = 35; // L/hr
 const holdingRate = 30; // L/hr
@@ -42,7 +41,6 @@ const formSchema = z.object({
 
 export function FuelPlan() {
   const { model } = useAircraftModel();
-  const { resolvedTheme } = useTheme();
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -236,15 +234,15 @@ export function FuelPlan() {
               <TableCell className="text-right">{discretionaryMin}</TableCell>
               <TableCell className="text-right">{discretionaryL}</TableCell>
             </TableRow>
-            <TableRow
-              className={cn({
-                "bg-green-900": resolvedTheme === "dark" && marginL >= 0,
-                "bg-red-900": resolvedTheme === "dark" && marginL < 0,
-                "bg-green-100": resolvedTheme === "light" && marginL >= 0,
-                "bg-red-100": resolvedTheme === "light" && marginL < 0,
-              })}
-            >
-              <TableCell>Margin</TableCell>
+            <TableRow>
+              <TableCell>
+                Margin
+                {marginL >= 0 ? (
+                  <Check className="ml-2 text-green-500 inline" />
+                ) : (
+                  <TriangleAlert className="ml-2 text-red-500 inline" />
+                )}
+              </TableCell>
               <TableCell className="text-right">{marginMin}</TableCell>
               <TableCell className="text-right">{marginL}</TableCell>
             </TableRow>
