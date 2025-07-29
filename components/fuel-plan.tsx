@@ -271,7 +271,7 @@ export function FuelPlan() {
           <div>
             <div className="flex flex-col space-y-4">
               <div className="flex flex-col space-y-2">
-                <Label>Contingency Fuel</Label>
+                <Label>Contingency</Label>
                 <FormField
                   control={form.control}
                   name="contingencyType"

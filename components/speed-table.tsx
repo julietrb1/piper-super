@@ -12,6 +12,7 @@ import {
   TableRow,
 } from "./ui/table";
 import { useAircraftModel } from "@/hooks/use-aircraft-model";
+import { PlaneLanding, PlaneTakeoff } from "lucide-react";
 
 interface Props {
   toW: number;
@@ -107,8 +108,12 @@ export function SpeedTable({ toW, lW }: Props) {
         <TableHeader>
           <TableRow className="bg-accent">
             <TableHead className="font-bold">Speed</TableHead>
-            <TableHead className="font-bold">Take-off</TableHead>
-            <TableHead className="font-bold">Landing</TableHead>
+            <TableHead className="font-bold">
+              <PlaneTakeoff />
+            </TableHead>
+            <TableHead className="font-bold">
+              <PlaneLanding />
+            </TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>

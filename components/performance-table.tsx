@@ -13,11 +13,12 @@ import { useForm } from "react-hook-form";
 import { SpeedTable } from "./speed-table";
 import { cn, lbsToKg, roundOneDec } from "@/lib/utils";
 import { FuelPlan } from "./fuel-plan";
-import { WeightPreset } from "@/hooks/use-weight-presets";
+import { WeightPreset } from "@/hooks/use-presets";
 import { InputWithLabel } from "@/components/input-with-label";
 import { BasicWeight } from "@/lib/basic-weight";
 import { Button } from "@/components/ui/button";
 import { useAircraftModel } from "@/hooks/use-aircraft-model";
+import { RotateCcw, TriangleAlert } from "lucide-react";
 
 const frontPassA = 80.5;
 const rearPassA = 118.1;
@@ -38,6 +39,7 @@ interface WeightRowProps {
   wKg?: number;
   muted?: boolean;
   primary?: boolean;
+  allowUnfilled?: boolean;
 }
 
 export function WeightRow({
@@ -48,6 +50,7 @@ export function WeightRow({
   wKg,
   muted,
   primary,
+  allowUnfilled,
 }: WeightRowProps) {
   return (
     <TableRow
@@ -57,7 +60,13 @@ export function WeightRow({
       })}
     >
       <TableCell className="text-left">{label}</TableCell>
-      <TableCell>{(w || "--").toLocaleString()}</TableCell>
+      <TableCell>
+        {w || allowUnfilled ? (
+          (w || "--").toLocaleString()
+        ) : (
+          <TriangleAlert className="ml-auto text-red-500" />
+        )}
+      </TableCell>
       <TableCell>{a && !isNaN(Number(a)) ? a : "--"}</TableCell>
       <TableCell>{(m || "--")?.toLocaleString()}</TableCell>
       <TableCell>{(wKg || "--")?.toLocaleString()}</TableCell>
@@ -165,7 +174,7 @@ export function PerformanceTable() {
         baggageW={baggageW}
         onPresetSelected={handlePassengerPresetSelected}
       />
-      <div className="flex flex-row space-x-2 items-center">
+      <div className="flex flex-row space-x-2 items-center mt-5">
         <InputWithLabel
           id="fob"
           labelText="Fuel (L)"
@@ -191,13 +200,13 @@ export function PerformanceTable() {
         <Button
           variant="secondary"
           className="mt-5"
-          size="sm"
+          size="icon"
           onClick={() => resetField("fuelL")}
         >
-          Reset fuel
+          <RotateCcw />
         </Button>
       </div>
-      <Table className="my-8 max-w-[560px] font-mono">
+      <Table className="mt-4 mb-8 max-w-[560px] font-mono">
         <TableHeader>
           <TableRow className="bg-accent">
             <TableHead className="py-2 font-bold">Weight/balance</TableHead>
@@ -225,6 +234,7 @@ export function PerformanceTable() {
             w={rearPassW}
             a={rearPassA}
             m={rearPassM}
+            allowUnfilled
           />
           <WeightRow
             label={`Fuel (${maxFuelGal} gal max)`}
@@ -237,9 +247,16 @@ export function PerformanceTable() {
             w={baggageW}
             a={baggageA}
             m={baggageM}
+            allowUnfilled
           />
           {model === "arrow3" && (
-            <WeightRow label="Retract" w={0} a="--" m={retractMoment} />
+            <WeightRow
+              allowUnfilled
+              label="Retract"
+              w={0}
+              a="--"
+              m={retractMoment}
+            />
           )}
           <WeightRow
             label="Ramp (RW)"
@@ -269,9 +286,9 @@ export function PerformanceTable() {
           <WeightRow label="ZFW" w={zfW} a={zfA} m={zfM} wKg={zfWKg} />
         </TableBody>
       </Table>
-      <div className="flex flex-row space-x-28">
-        <SpeedTable toW={toW} lW={lW} />
+      <div className="grid grid-cols-2">
         <FuelPlan />
+        <SpeedTable toW={toW} lW={lW} />
       </div>
     </div>
   );
